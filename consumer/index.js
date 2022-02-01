@@ -12,7 +12,10 @@ amqpConnection
         })
     .then(function(channel) {
             return channel.assertQueue(queue, {
-                durable: false
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null
             }).then(function(ok) {
                 return channel.consume(queue, function(body) {
                     if (body !== null) {

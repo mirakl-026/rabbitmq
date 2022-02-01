@@ -4,17 +4,28 @@ var amqpConnection = amqplib.connect('amqp://localhost');   // инстанс п
 
 const queue = 'dev-queue';    // название очереди
 
-const message = "something to do";
-const messageBytes = Buffer.from(message);
+const message = "something to do:";
+
+
 
 // Publisher
-amqpConnection
-    .then(function(connection) {
-            return connection.createChannel();    // подключение возвращает канал
-        })
-    .then(function(channel) {
-            return channel.assertQueue(queue).then(function(ok) {
-                return channel.sendToQueue(queue, messageBytes);    // отправка в очередь
-            });
-        })
-    .catch(console.warn);
+for (let i = 0; i < 10; i++) {
+
+    const messageBytes = Buffer.from(message + i);
+
+    amqpConnection
+        .then(function(connection) {
+                return connection.createChannel();    // подключение возвращает канал
+            })
+        .then(function(channel) {
+                return channel.assertQueue(queue, {
+                    durable: true,
+                    exclusive: false,
+                    autoDelete: false,
+                    arguments: null
+                }).then(function(ok) {
+                    return channel.sendToQueue(queue, messageBytes);    // отправка в очередь
+                });
+            })
+        .catch(console.warn);
+}
