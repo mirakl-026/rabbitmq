@@ -29,3 +29,5 @@ for (let i = 0; i < 10; i++) {
             })
         .catch(console.warn);
 }
+
+// channel assertExchange("ex_name").assertQueue(...)
